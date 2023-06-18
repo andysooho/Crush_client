@@ -14,14 +14,21 @@ class ClothGenerate extends StatefulWidget {
 }
 
 class ClothGenerateState extends State<ClothGenerate> {
-  final ClothKey = GlobalKey<FormState>();
+  final tagKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
-  String name = '';
+  String tag = '';
   String color = '검정';
   String type = '티셔츠';
-  String thickness = '보통';
+  String tagResult = '';
   XFile? _imageFile;
-  Color selectedColor = Colors.white;
+
+  void _setImageTagResult() {
+    if (tag.isEmpty) {
+      tagResult = '$color $type';
+    } else {
+      tagResult = tag;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -58,25 +65,25 @@ class ClothGenerateState extends State<ClothGenerate> {
             ),
             Container(
               child: Form(
-                key: ClothKey,
+                key: tagKey,
                 child: SingleChildScrollView(
                   child: Padding(
                     padding: const EdgeInsets.all(16.0),
                     child: Column(
                       children: [
                         renderTextFormField(
-                          label: '옷 이름',
+                          label: '코디 태그',
                           onSaved: (val) {
                             setState(() {
-                              name = val;
+                              tag = val;
                             });
                           },
                           validator: (val) {
-                            if (val.length < 1) {
-                              return '이름은 필수사항입니다.';
-                            }
-                            return null;
                           },
+                        ),
+                        const Text("참고! 위에 태그를 직접 입력하면 아래 선택사항은 무시됩니다."),
+                        const SizedBox(
+                          height: 10,
                         ),
                         renderTextFormField(
                           label: '색깔',
@@ -123,8 +130,10 @@ class ClothGenerateState extends State<ClothGenerate> {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[200]),
       onPressed: () async {
-        if (ClothKey.currentState!.validate()) {
-          ClothKey.currentState!.save();
+        if (tagKey.currentState!.validate()) {
+          tagKey.currentState!.save();
+          _setImageTagResult();
+          print(tagResult);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('테스트중.'),
