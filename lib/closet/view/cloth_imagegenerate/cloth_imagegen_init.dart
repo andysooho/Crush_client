@@ -1,16 +1,14 @@
 import 'dart:io';
 
-import 'package:crush_client/closet/model/cloth_model.dart';
 import 'package:crush_client/closet/view/cloth_type.dart';
 import 'package:crush_client/closet/view/my_palette.dart';
-import 'package:crush_client/closet/view/thickness_select.dart';
 import 'package:crush_client/common/layout/default_layout.dart';
-import 'package:crush_client/repositories/repositories.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 class ClothGenerate extends StatefulWidget {
+  const ClothGenerate({super.key});
+
   @override
   ClothGenerateState createState() => ClothGenerateState();
 }
@@ -25,16 +23,10 @@ class ClothGenerateState extends State<ClothGenerate> {
   XFile? _imageFile;
   Color selectedColor = Colors.white;
 
-  void _handleColorSelected(Color color) {
-    setState(() {
-      selectedColor = color;
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
-      title: '옷 추가',
+      title: '코디 생성',
       child: SingleChildScrollView(
         child: Column(
           children: [
@@ -83,9 +75,6 @@ class ClothGenerateState extends State<ClothGenerate> {
                             if (val.length < 1) {
                               return '이름은 필수사항입니다.';
                             }
-                            if (val.length < 2) {
-                              return '이름은 두글자 이상 입력 해주셔야합니다.';
-                            }
                             return null;
                           },
                         ),
@@ -93,7 +82,7 @@ class ClothGenerateState extends State<ClothGenerate> {
                           label: '색깔',
                           onSaved: (val) {
                             setState(() {
-                              this.color = val;
+                              color = val;
                             });
                           },
                           validator: (val) {
@@ -107,26 +96,12 @@ class ClothGenerateState extends State<ClothGenerate> {
                           label: '종류',
                           onSaved: (val) {
                             setState(() {
-                              this.type = val;
+                              type = val;
                             });
                           },
                           validator: (val) {
                             if (val.length < 1) {
                               return '종류는 필수사항입니다.';
-                            }
-                            return null;
-                          },
-                        ),
-                        renderTextFormField(
-                          label: '두께',
-                          onSaved: (val) {
-                            setState(() {
-                              this.thickness = val;
-                            });
-                          },
-                          validator: (val) {
-                            if (val.length < 1) {
-                              return '두께는 필수사항입니다.';
                             }
                             return null;
                           },
@@ -148,30 +123,18 @@ class ClothGenerateState extends State<ClothGenerate> {
     return ElevatedButton(
       style: ElevatedButton.styleFrom(backgroundColor: Colors.grey[200]),
       onPressed: () async {
-        if (this.ClothKey.currentState!.validate()) {
-          this.ClothKey.currentState!.save();
+        if (ClothKey.currentState!.validate()) {
+          ClothKey.currentState!.save();
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('옷이 등록되었습니다.'),
+              content: Text('테스트중.'),
             ),
           );
-          RepositoryProvider.of<FirestoreRepository>(context).addCloth(
-              uid: RepositoryProvider.of<AuthenticationRepository>(context)
-                  .currentUser,
-              image: File(_imageFile!.path),
-              cloth: Cloth(
-                clothId: '',
-                name: name,
-                color: color,
-                type: type,
-                thickness: thickness,
-              ));
-
           Navigator.pop(context, true);
         }
       },
       child: const Text(
-        '추가',
+        '코디 생성',
         style: TextStyle(
           color: Colors.black,
         ),
@@ -185,9 +148,6 @@ class ClothGenerateState extends State<ClothGenerate> {
     required FormFieldValidator validator,
     String? thickness,
   }) {
-    assert(onSaved != null);
-    assert(validator != null);
-
     if (label == '색깔') {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -232,33 +192,6 @@ class ClothGenerateState extends State<ClothGenerate> {
               const SizedBox(width: 10),
               Expanded(
                 child: TypeSelection(
-                  onSaved: onSaved,
-                ),
-              ),
-            ],
-          ),
-          Container(
-            height: 16.0,
-          ),
-        ],
-      );
-    } else if (label == '두께') {
-      return Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                label,
-                style: const TextStyle(
-                  fontSize: 12.0,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              const SizedBox(width: 10),
-              Expanded(
-                child: ThickSelection(
                   onSaved: onSaved,
                 ),
               ),

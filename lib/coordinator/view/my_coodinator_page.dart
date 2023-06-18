@@ -1,4 +1,4 @@
-import 'package:crush_client/closet/view/cloth_recommend/cloth_recommend_init.dart';
+import 'package:crush_client/closet/view/cloth_imagegenerate/cloth_imagegen_init.dart';
 import 'package:crush_client/common/layout/default_layout.dart';
 import 'package:crush_client/repositories/repositories.dart';
 import 'package:flutter/cupertino.dart';
@@ -109,7 +109,7 @@ class _MyCoordiPageState extends State<MyCoordiPage> {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => ClothRecommendInit(),
+                    builder: (context) => ClothGenerate(),
                   ),
                 );
               },
@@ -120,7 +120,7 @@ class _MyCoordiPageState extends State<MyCoordiPage> {
                   children: const [
                     Icon(CupertinoIcons.paperplane_fill, color: INPUT_BG_COLOR),
                     SizedBox(width: 10),
-                    Text(' 옷 추천', style: TextStyle(fontSize: 16)),
+                    Text('코디 생성', style: TextStyle(fontSize: 16)),
                   ],
                 ),
               ),
