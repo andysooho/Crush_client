@@ -1,8 +1,11 @@
+import 'package:crush_client/closet/view/cloth_recommend/cloth_recommend_init.dart';
 import 'package:crush_client/common/layout/default_layout.dart';
 import 'package:crush_client/repositories/repositories.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../common/const/colors.dart';
 import '../model/my_coordination_model.dart';
 import '../widget/my_coordi_card.dart';
 
@@ -27,66 +30,105 @@ class _MyCoordiPageState extends State<MyCoordiPage> {
 
   @override
   Widget build(BuildContext context) {
-    return DefaultLayout(
-      title: '나의 코디',
-      child: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16.0),
-          child: CustomScrollView(
-            slivers: [
-              FutureBuilder<List<MyOutfit>>(
-                future: _myOutfitList,
-                builder: (context, snapshot) {
-                  if (snapshot.connectionState == ConnectionState.waiting) {
-                    return SliverToBoxAdapter(
-                      child: Container(
-                          height: MediaQuery.of(context).size.height * 0.5,
-                          alignment: Alignment.center,
-                          child: const CircularProgressIndicator()
-                      ),
-                    );
-                  }
-                  if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                    return const SliverFillRemaining(
-                      child: Center(
-                        child: Text(
-                          '아직 등록된 코디가 없습니다.',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(fontSize: 16),
-                        ),
-                      ),
-                    );
-                  }
-
-                  List<MyOutfit> outfits = snapshot.data!;
-                  return SliverGrid(
-                    gridDelegate:
-                        const SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10.0,
-                      mainAxisSpacing: 10.0,
-                      childAspectRatio: 3 / 4,
-                    ),
-                    delegate: SliverChildBuilderDelegate(
-                      (BuildContext context, int index) {
-                        return GestureDetector(
-                          onTap: () {
-                            _showCoordiDialog(context, outfits[index]);
-                          },
-                          child: MyCoordiCard(
-                            outfit: outfits[index],
+    return Stack(
+      children: [
+        DefaultLayout(
+          title: '나의 코디',
+          child: Center(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16.0),
+              child: CustomScrollView(
+                slivers: [
+                  FutureBuilder<List<MyOutfit>>(
+                    future: _myOutfitList,
+                    builder: (context, snapshot) {
+                      if (snapshot.connectionState == ConnectionState.waiting) {
+                        return SliverToBoxAdapter(
+                          child: Container(
+                              height: MediaQuery.of(context).size.height * 0.5,
+                              alignment: Alignment.center,
+                              child: const CircularProgressIndicator()),
+                        );
+                      }
+                      if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                        return const SliverFillRemaining(
+                          child: Center(
+                            child: Text(
+                              '아직 등록된 코디가 없습니다.',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(fontSize: 16),
+                            ),
                           ),
                         );
-                      },
-                      childCount: outfits.length,
-                    ),
-                  );
-                },
+                      }
+
+                      List<MyOutfit> outfits = snapshot.data!;
+                      return SliverGrid(
+                        gridDelegate:
+                            const SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10.0,
+                          mainAxisSpacing: 10.0,
+                          childAspectRatio: 3 / 4,
+                        ),
+                        delegate: SliverChildBuilderDelegate(
+                          (BuildContext context, int index) {
+                            return GestureDetector(
+                              onTap: () {
+                                _showCoordiDialog(context, outfits[index]);
+                              },
+                              child: MyCoordiCard(
+                                outfit: outfits[index],
+                              ),
+                            );
+                          },
+                          childCount: outfits.length,
+                        ),
+                      );
+                    },
+                  ),
+                ],
               ),
-            ],
+            ),
           ),
         ),
-      ),
+        //아래 버튼
+        Align(
+          alignment: Alignment.bottomRight,
+          child: Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.black,
+                backgroundColor: PRIMARY_COLOR,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => ClothRecommendInit(),
+                  ),
+                );
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 8),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: const [
+                    Icon(CupertinoIcons.paperplane_fill, color: INPUT_BG_COLOR),
+                    SizedBox(width: 10),
+                    Text(' 옷 추천', style: TextStyle(fontSize: 16)),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ),
+
+      ],
     );
   }
 
