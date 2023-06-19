@@ -1,10 +1,13 @@
 import 'dart:io';
 
+import 'package:crush_client/closet/services/api_imagegen.dart';
 import 'package:crush_client/closet/view/cloth_type.dart';
 import 'package:crush_client/closet/view/my_palette.dart';
 import 'package:crush_client/common/layout/default_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
+
+import 'cloth_imagegen_result.dart';
 
 class ClothGenerate extends StatefulWidget {
   const ClothGenerate({super.key});
@@ -16,6 +19,8 @@ class ClothGenerate extends StatefulWidget {
 class ClothGenerateState extends State<ClothGenerate> {
   final tagKey = GlobalKey<FormState>();
   final ImagePicker _picker = ImagePicker();
+  final ImageApi _imageApi = ImageApi();
+
   String tag = '';
   String color = '검정';
   String type = '티셔츠';
@@ -63,59 +68,57 @@ class ClothGenerateState extends State<ClothGenerate> {
                 ),
               ),
             ),
-            Container(
-              child: Form(
-                key: tagKey,
-                child: SingleChildScrollView(
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      children: [
-                        renderTextFormField(
-                          label: '코디 태그',
-                          onSaved: (val) {
-                            setState(() {
-                              tag = val;
-                            });
-                          },
-                          validator: (val) {
-                          },
-                        ),
-                        const Text("참고! 위에 태그를 직접 입력하면 아래 선택사항은 무시됩니다."),
-                        const SizedBox(
-                          height: 10,
-                        ),
-                        renderTextFormField(
-                          label: '색깔',
-                          onSaved: (val) {
-                            setState(() {
-                              color = val;
-                            });
-                          },
-                          validator: (val) {
-                            if (val.length < 1) {
-                              return '색깔은 필수사항입니다.';
-                            }
-                            return null;
-                          },
-                        ),
-                        renderTextFormField(
-                          label: '종류',
-                          onSaved: (val) {
-                            setState(() {
-                              type = val;
-                            });
-                          },
-                          validator: (val) {
-                            if (val.length < 1) {
-                              return '종류는 필수사항입니다.';
-                            }
-                            return null;
-                          },
-                        ),
-                        renderButton(),
-                      ],
-                    ),
+            Form(
+              key: tagKey,
+              child: SingleChildScrollView(
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    children: [
+                      renderTextFormField(
+                        label: '코디 태그',
+                        onSaved: (val) {
+                          setState(() {
+                            tag = val;
+                          });
+                        },
+                        validator: (val) {
+                        },
+                      ),
+                      const Text("참고. 위에 원하는 태그를 영어로 입력해주세요.\n예시: A woman, black t-shirt"),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      renderTextFormField(
+                        label: '색깔',
+                        onSaved: (val) {
+                          setState(() {
+                            color = val;
+                          });
+                        },
+                        validator: (val) {
+                          if (val.length < 1) {
+                            return '색깔은 필수사항입니다.';
+                          }
+                          return null;
+                        },
+                      ),
+                      renderTextFormField(
+                        label: '종류',
+                        onSaved: (val) {
+                          setState(() {
+                            type = val;
+                          });
+                        },
+                        validator: (val) {
+                          if (val.length < 1) {
+                            return '종류는 필수사항입니다.';
+                          }
+                          return null;
+                        },
+                      ),
+                      renderButton(),
+                    ],
                   ),
                 ),
               ),
@@ -136,10 +139,27 @@ class ClothGenerateState extends State<ClothGenerate> {
           print(tagResult);
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
-              content: Text('테스트중.'),
+              content: Text('코디 생성중... 잠시만 기다려주세요.'),
+              duration: Duration(seconds: 12),
             ),
           );
-          Navigator.pop(context, true);
+
+          String imageUrl = await _imageApi.generateImage(tagResult, File(_imageFile!.path), 'assets/mask.png');
+          if(imageUrl != ''){
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('코디 생성 완료.'),
+              ),
+            );
+            Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImageDisplayPage(imageUrl)));
+          }else{
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('코디 생성 실패.'),
+              ),
+            );
+          }
+          //Navigator.pop(context, true);
         }
       },
       child: const Text(
