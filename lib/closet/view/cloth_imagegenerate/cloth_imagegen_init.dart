@@ -1,8 +1,8 @@
 import 'dart:io';
 
 import 'package:crush_client/closet/services/api_imagegen.dart';
-import 'package:crush_client/closet/view/cloth_type.dart';
-import 'package:crush_client/closet/view/my_palette.dart';
+import 'package:crush_client/closet/widget/cloth_type_dropdown.dart';
+import 'package:crush_client/closet/widget/my_palette_dropdown.dart';
 import 'package:crush_client/common/layout/default_layout.dart';
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
@@ -144,7 +144,7 @@ class ClothGenerateState extends State<ClothGenerate> {
             ),
           );
 
-          String imageUrl = await _imageApi.generateImage(tagResult, File(_imageFile!.path), 'assets/mask.png');
+          String imageUrl = await _imageApi.generateImage(tagResult, File(_imageFile!.path), 'assets/image/mask.png');
           if(imageUrl != ''){
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(

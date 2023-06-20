@@ -44,7 +44,7 @@ class _ClothRecommendInitState extends State<ClothRecommendInit> {
     authRepo = RepositoryProvider.of<AuthenticationRepository>(context);
     _loadFuture = _getUserInfo();
 
-    _controller = VideoPlayerController.asset('assets/loading.mp4')
+    _controller = VideoPlayerController.asset('assets/video/loading.mp4')
       ..initialize().then((_) {
         _controller.play();
         _controller.setLooping(true);
@@ -246,7 +246,7 @@ class _ClothRecommendInitState extends State<ClothRecommendInit> {
                             Align(
                               alignment: Alignment.bottomCenter,
                               child: Image.asset(
-                                'assets/bg_main.png',
+                                'assets/image/bg_main.png',
                                 fit: BoxFit.cover,
                                 width: MediaQuery.of(context).size.width,
                                 height: MediaQuery.of(context).size.height * 0.6,

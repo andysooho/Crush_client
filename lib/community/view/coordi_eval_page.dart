@@ -94,7 +94,7 @@ class _CoordiEvalPageState extends State<CoordiEvalPage> {
                         child: Column(
                           children: [
                             Image.asset(
-                                'assets/logo_circle.png',
+                                'assets/image/logo_circle.png',
                                 fit: BoxFit.fitWidth,
                                 width: MediaQuery.of(context).size.width * 0.7,
                                 height: MediaQuery.of(context).size.height * 0.7,

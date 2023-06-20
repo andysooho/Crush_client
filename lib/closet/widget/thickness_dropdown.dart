@@ -6,10 +6,10 @@ class ThickSelection extends StatefulWidget {
   const ThickSelection({Key? key, required this.onSaved}) : super(key: key);
 
   @override
-  _ThickSelectionState createState() => _ThickSelectionState();
+  ThickSelectionState createState() => ThickSelectionState();
 }
 
-class _ThickSelectionState extends State<ThickSelection> {
+class ThickSelectionState extends State<ThickSelection> {
   String selectedThickName = '보통';
 
   final List<Map<String, dynamic>> Thicks = [

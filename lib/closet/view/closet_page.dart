@@ -7,7 +7,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../widget/cloth_grid_view.dart';
+
 class ClosetPage extends StatefulWidget {
+  const ClosetPage({super.key});
+
   @override
   State<ClosetPage> createState() => _ClosetPageState();
 }
@@ -38,6 +42,10 @@ class _ClosetPageState extends State<ClosetPage>
     super.dispose();
   }
 
+  Widget _clothesByTypeWrapper(String type) {
+    return ClothGridView(type);
+  }
+
   @override
   Widget build(BuildContext context) {
     return DefaultLayout(
@@ -65,7 +73,7 @@ class _ClosetPageState extends State<ClosetPage>
                       ),
                     ),
                     indicatorSize: TabBarIndicatorSize.tab,
-                    indicatorPadding: EdgeInsets.fromLTRB(0, -2, 0, 2),
+                    indicatorPadding: const EdgeInsets.fromLTRB(0, -2, 0, 2),
                     labelColor: Colors.black,
                     unselectedLabelColor: Colors.grey,
                     indicatorColor: Colors.black,
@@ -92,10 +100,10 @@ class _ClosetPageState extends State<ClosetPage>
               child: TabBarView(
                 controller: _tabController,
                 children: [
-                  _buildClothesByType('전체'),
-                  _buildClothesByType('상의'),
-                  _buildClothesByType('하의'),
-                  _buildClothesByType('기타'),
+                  _clothesByTypeWrapper('전체'),
+                  _clothesByTypeWrapper('상의'),
+                  _clothesByTypeWrapper('하의'),
+                  _clothesByTypeWrapper('기타'),
                 ],
               ),
             ),
@@ -115,11 +123,11 @@ class _ClosetPageState extends State<ClosetPage>
                     Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (context) => ClothRecommendInit()),
+                          builder: (context) => const ClothRecommendInit()),
                     );
                   },
                   child: Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 2.5, vertical: 8),
+                    padding: const EdgeInsets.symmetric(horizontal: 2.5, vertical: 8),
                     child: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: const [
@@ -137,428 +145,5 @@ class _ClosetPageState extends State<ClosetPage>
         ),
       ),
     );
-  }
-
-  void _showClothDialog(BuildContext context, Cloth cloth) {
-    const defaultImage =
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrVqTt0O2Wb_AijJ2MgpH162DTExM55h0Wmg&usqp=CAU';
-    showGeneralDialog(
-      context: context,
-      barrierDismissible: true,
-      barrierLabel: '',
-      pageBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation) {
-        return SafeArea(
-          top: true,
-          bottom: false,
-          child: Center(
-            child: Container(
-              decoration: const BoxDecoration(
-                color: Color(0xFFE5E5E5),
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(16.0),
-                  topRight: Radius.circular(16.0),
-                ),
-              ),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  const SizedBox(height: 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      const SizedBox(width: 8),
-                      TextButton(
-                        onPressed: () {
-                          Navigator.pop(context);
-                        },
-                        child: const Text(
-                          '뒤로',
-                          textAlign: TextAlign.left,
-                        ),
-                      ),
-                    ],
-                  ), // 뒤로 버튼
-                  Expanded(
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Center(
-                            child: FutureBuilder<String?>(
-                              future:
-                                  RepositoryProvider.of<FirestoreRepository>(context)
-                                      .getImageByClothId(
-                                uid: RepositoryProvider.of<
-                                        AuthenticationRepository>(context)
-                                    .currentUser,
-                                clothId: cloth.clothId,
-                              ),
-                              builder: (context, snapshot) {
-                                if (snapshot.connectionState ==
-                                    ConnectionState.waiting) {
-                                  return const Center(
-                                      child: CircularProgressIndicator());
-                                } else if (snapshot.hasError) {
-                                  return Text('Error: ${snapshot.error}');
-                                } else {
-                                  final imageUrl = snapshot.data ?? defaultImage;
-                                  return Stack(
-                                    children: <Widget>[
-                                      ClipRRect(
-                                        borderRadius: BorderRadius.circular(32.0),
-                                        child: Image.network(
-                                          imageUrl,
-                                          fit: BoxFit.cover,
-                                          width: MediaQuery.of(context).size.width,
-                                          height: MediaQuery.of(context).size.height * 0.55,
-                                        ),
-                                      ),
-                                      Positioned.fill(
-                                        child: ClipRRect(
-                                          borderRadius: BorderRadius.circular(32.0),
-                                          child: Container(
-                                            decoration: BoxDecoration(
-                                              border: Border.all(
-                                                color: Colors.black26,
-                                                width: 2,
-                                              ),
-                                              borderRadius: BorderRadius.circular(32.0),
-                                              color: Colors.transparent,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ); //이미지
-                                }
-                              },
-                            ),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(16.0),
-                            child: Text(
-                              cloth.name,
-                              style: const TextStyle(
-                                fontSize: 35.0,
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                decoration: TextDecoration.none,
-                              ),
-                            ),
-                          ),
-                          const SizedBox(height: 10.0),
-                          Row(
-                            children: [
-                              const SizedBox(width: 16.0),
-                              const Text(
-                                '종류  ',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                              //const SizedBox(width: 8.0),
-                              Text(
-                                cloth.type,
-                                style: const TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.black,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10.0),
-                          Row(
-                            children: [
-                              const SizedBox(width: 16.0),
-                              const Text(
-                                '색상  ',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                              //const SizedBox(width: 8.0),
-                              Text(
-                                cloth.color,
-                                style: const TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.black,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 10.0),
-                          Row(
-                            children: [
-                              const SizedBox(width: 16.0),
-                              const Text(
-                                '두께  ',
-                                style: TextStyle(
-                                  fontSize: 18.0,
-                                  fontWeight: FontWeight.w500,
-                                  color: Colors.black,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                              Text(
-                                cloth.thickness,
-                                style: const TextStyle(
-                                  fontSize: 18.0,
-                                  color: Colors.black,
-                                  decoration: TextDecoration.none,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-                        ElevatedButton(
-                          onPressed: () async {
-                            await RepositoryProvider.of<FirestoreRepository>(
-                                    context)
-                                .removeCloth(
-                                    uid: RepositoryProvider.of<
-                                            AuthenticationRepository>(context)
-                                        .currentUser,
-                                    clothId: cloth.clothId);
-                            Navigator.pop(context);
-                          },
-                          style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.grey[400],
-                          ),
-                          child: const Text(
-                            '삭제',
-                            style:
-                                TextStyle(fontSize: 18.0, color: Colors.blue),
-                          ),
-                        ),
-                        const SizedBox(width: 16.0),
-                      ],
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        );
-      },
-      transitionDuration: const Duration(milliseconds: 200),
-      transitionBuilder: (BuildContext context, Animation<double> animation,
-          Animation<double> secondaryAnimation, Widget child) {
-        return SlideTransition(
-          position: Tween<Offset>(
-            begin: const Offset(0.0, 1.0),
-            end: Offset.zero,
-          ).animate(animation),
-          child: child,
-        );
-      },
-    );
-  }
-
-  /// widget that show Clothes by type
-  Widget _buildClothesGridView(List<Cloth> clothes) {
-    final firestoreRepository =
-        RepositoryProvider.of<FirestoreRepository>(context);
-    const defaultImage =
-        'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRrVqTt0O2Wb_AijJ2MgpH162DTExM55h0Wmg&usqp=CAU';
-
-    return GridView.builder(
-      itemCount: clothes.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 2,
-      ),
-      itemBuilder: (BuildContext context, int index) {
-        final Cloth cloth = clothes[index];
-
-        return FutureBuilder<String?>(
-          future: firestoreRepository.getImageByClothId(
-            uid: RepositoryProvider.of<AuthenticationRepository>(context)
-                .currentUser,
-            clothId: cloth.clothId,
-          ),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              final imageUrl = snapshot.data ?? '';
-
-              return GestureDetector(
-                onTap: () {
-                  _showClothDialog(context, cloth);
-                },
-                child: Expanded(
-                  child: Column(
-                    children: [
-                      ClipRRect(
-                        borderRadius: BorderRadius.circular(12.0),
-                        child: Image.network(
-                          imageUrl.isEmpty ? defaultImage : imageUrl,
-                          width: MediaQuery.of(context).size.width * 0.3,
-                          height: MediaQuery.of(context).size.width * 0.35,
-                          fit: BoxFit.cover,
-                        ),
-                      ),
-                      const SizedBox(height: 8),
-                      Text(cloth.name,
-                          style: const TextStyle(
-                            fontSize: 15.0,
-                            fontWeight: FontWeight.w600,
-                          ),
-                          overflow: TextOverflow.ellipsis),
-                      Text(cloth.type),
-                    ],
-                  ),
-                ),
-              );
-            }
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildClothesByType(String type) {
-    final firestoreRepository =
-        RepositoryProvider.of<FirestoreRepository>(context);
-
-    if (type == '전체') {
-      return Expanded(
-        child: StreamBuilder<List<Cloth>>(
-          stream: firestoreRepository.getClothStream(
-            uid: RepositoryProvider.of<AuthenticationRepository>(context)
-                .currentUser,
-          ),
-          builder: (context, clothList) {
-            if (clothList.hasError) {
-              return Center(child: Text('Error: ${clothList.error}'));
-            }
-            if (clothList.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            return _buildClothesGridView(clothList.data!);
-          },
-        ),
-      );
-    } else if (type == '상의') {
-      final topClothTypes = [
-        '티셔츠',
-        '맨투맨',
-        '후드티',
-        '셔츠',
-        '니트',
-        '카디건',
-        '자켓',
-        '블레이저',
-        '롱코트',
-        '패딩',
-        '바람막이',
-        '상의',
-      ];
-
-      return Expanded(
-        child: StreamBuilder<List<Cloth>>(
-          stream: firestoreRepository.getClothStream(
-            uid: RepositoryProvider.of<AuthenticationRepository>(context)
-                .currentUser,
-          ),
-          builder: (context, clothList) {
-            if (clothList.hasError) {
-              return Center(child: Text('Error: ${clothList.error}'));
-            }
-            if (clothList.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final filteredClothes = clothList.data!
-                .where((cloth) => topClothTypes.contains(cloth.type))
-                .toList();
-
-            return _buildClothesGridView(filteredClothes);
-          },
-        ),
-      );
-    } else if (type == '하의') {
-      final bottomClothTypes = [
-        '청바지',
-        '슬랙스',
-        '조거팬츠',
-        '하의',
-      ];
-
-      return Expanded(
-        child: StreamBuilder<List<Cloth>>(
-          stream: firestoreRepository.getClothStream(
-            uid: RepositoryProvider.of<AuthenticationRepository>(context)
-                .currentUser,
-          ),
-          builder: (context, clothList) {
-            if (clothList.hasError) {
-              return Center(child: Text('Error: ${clothList.error}'));
-            }
-            if (clothList.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final filteredClothes = clothList.data!
-                .where((cloth) => bottomClothTypes.contains(cloth.type))
-                .toList();
-
-            return _buildClothesGridView(filteredClothes);
-          },
-        ),
-      );
-    } else {
-      final anyClothTypes = [
-        '신발',
-        '안경',
-        '액세서리',
-        '기타',
-      ];
-
-      return Expanded(
-        child: StreamBuilder<List<Cloth>>(
-          stream: firestoreRepository.getClothStream(
-            uid: RepositoryProvider.of<AuthenticationRepository>(context)
-                .currentUser,
-          ),
-          builder: (context, clothList) {
-            if (clothList.hasError) {
-              return Center(child: Text('Error: ${clothList.error}'));
-            }
-            if (clothList.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
-            }
-
-            final filteredClothes = clothList.data!
-                .where((cloth) => anyClothTypes.contains(cloth.type))
-                .toList();
-
-            return _buildClothesGridView(filteredClothes);
-          },
-        ),
-      );
-    }
   }
 }

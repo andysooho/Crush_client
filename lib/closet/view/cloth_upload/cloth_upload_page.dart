@@ -1,9 +1,9 @@
 import 'dart:io';
 
 import 'package:crush_client/closet/model/cloth_model.dart';
-import 'package:crush_client/closet/view/cloth_type.dart';
-import 'package:crush_client/closet/view/my_palette.dart';
-import 'package:crush_client/closet/view/thickness_select.dart';
+import 'package:crush_client/closet/widget/cloth_type_dropdown.dart';
+import 'package:crush_client/closet/widget/my_palette_dropdown.dart';
+import 'package:crush_client/closet/widget/thickness_dropdown.dart';
 import 'package:crush_client/common/layout/default_layout.dart';
 import 'package:crush_client/repositories/repositories.dart';
 import 'package:flutter/material.dart';
