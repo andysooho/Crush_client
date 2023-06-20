@@ -28,9 +28,6 @@ void main() async {
     googleSignIn: GoogleSignIn(),
     firestoreRepository: firestoreRepository,
   );
-  final photosRepository = PhotosRepository(
-    firebaseStorage: FirebaseStorage.instance,
-  );
   final coordiRepository = CoordiRepository(
     firebaseStorage: FirebaseStorage.instance,
     firebaseFirestore: FirebaseFirestore.instance,
@@ -40,7 +37,6 @@ void main() async {
     () => runApp(
       App(
         authenticationRepository: authenticationRepository,
-        photosRepository: photosRepository,
         firestoreRepository: firestoreRepository,
         coordiRepository: coordiRepository,
       ),

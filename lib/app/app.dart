@@ -6,14 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class App extends StatelessWidget {
   const App({
     required this.authenticationRepository,
-    required this.photosRepository,
     required this.firestoreRepository,
     required this.coordiRepository,
     super.key,
   });
 
   final AuthenticationRepository authenticationRepository;
-  final PhotosRepository photosRepository;
   final FirestoreRepository firestoreRepository;
   final CoordiRepository coordiRepository;
 
@@ -22,7 +20,6 @@ class App extends StatelessWidget {
     return MultiRepositoryProvider(
       providers: [
         RepositoryProvider.value(value: authenticationRepository),
-        RepositoryProvider.value(value: photosRepository),
         RepositoryProvider.value(value: firestoreRepository),
         RepositoryProvider.value(value: coordiRepository),
       ],
@@ -39,7 +36,7 @@ class _App extends StatelessWidget {
       title: 'Crush',
       initialRoute: '/',
       routes: <String, WidgetBuilder>{
-        '/': (context) => SignInWithVideo(),
+        '/': (context) => const SignInWithVideo(),
       },
     );
   }
