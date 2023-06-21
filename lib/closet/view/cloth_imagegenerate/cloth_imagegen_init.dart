@@ -146,11 +146,6 @@ class ClothGenerateState extends State<ClothGenerate> {
 
           String imageUrl = await _imageApi.generateImage(tagResult, File(_imageFile!.path), 'assets/image/mask.png');
           if(imageUrl != ''){
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('코디 생성 완료.'),
-              ),
-            );
             Navigator.of(context).push(MaterialPageRoute(builder: (context) => ImageDisplayPage(imageUrl)));
           }else{
             ScaffoldMessenger.of(context).showSnackBar(
