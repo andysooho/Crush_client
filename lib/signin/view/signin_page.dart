@@ -9,16 +9,16 @@ class SignInWithVideo extends StatefulWidget {
   const SignInWithVideo({super.key});
 
   @override
-  _SignInWithVideoState createState() => _SignInWithVideoState();
+  SignInWithVideoState createState() => SignInWithVideoState();
 }
 
-class _SignInWithVideoState extends State<SignInWithVideo> {
+class SignInWithVideoState extends State<SignInWithVideo> {
   late VideoPlayerController _controller;
   // TODO: web bug fix
   @override
   void initState() {
     super.initState();
-    _controller = VideoPlayerController.asset("assets/sample_video_low.mp4")
+    _controller = VideoPlayerController.asset("assets/video/sample_video_low.mp4")
       ..initialize().then((_) {
         _controller.play();
         _controller.setLooping(true);

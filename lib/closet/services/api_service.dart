@@ -53,6 +53,7 @@ class ApiService {
 
     if (response.statusCode == 200) {
       final List<dynamic> aiCoordis = jsonDecode(response.data);
+      // final List<dynamic> aiCoordis = json.decode(response.data['choices'][0]['message']['content']);
       for (var aiCoordi in aiCoordis) {
         List<String> aicoordiString = [for (var e in aiCoordi) e.toString()];
         coordinationInstances.add(RecommendModel.fromList(aicoordiString));

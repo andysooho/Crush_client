@@ -12,7 +12,7 @@ class ImageApi {
     // 파일을 바이트로 읽고 MultipartFile로 변환하는 부분 추가
     ByteData data = await rootBundle.load(imageMaskPath);
     List<int> bytes = data.buffer.asUint8List();
-    MultipartFile imageMask = MultipartFile.fromBytes(bytes, filename: 'mask.png');
+    MultipartFile imageMask = MultipartFile.fromBytes(bytes, filename: 'assets/image/mask.png');
 
     FormData formData = FormData.fromMap({
       'image': await MultipartFile.fromFile(imageFile.path),

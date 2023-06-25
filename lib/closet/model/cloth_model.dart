@@ -4,6 +4,7 @@ class Cloth {
   final String color;
   final String type;
   final String thickness;
+  final String imageURL;
 
   Cloth({
     required this.clothId,
@@ -11,6 +12,7 @@ class Cloth {
     required this.color,
     required this.type,
     required this.thickness,
+    this.imageURL = '',
   });
 
   factory Cloth.fromJson(Map<String, dynamic> json) {
@@ -20,6 +22,7 @@ class Cloth {
       color: json['color'],
       type: json['type'],
       thickness: json['thickness'],
+      imageURL: json['imageURL'] ?? '',
     );
   }
 

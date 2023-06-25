@@ -56,7 +56,7 @@ class _CoordiEvalCardState extends State<CoordiEvalCard> {
                   child: ClipRRect(
                     borderRadius: BorderRadius.circular(20.0),
                     child: Image.asset(
-                      'assets/black_shadow_overlay.png',
+                      'assets/image/black_shadow_overlay.png',
                       fit: BoxFit.cover,
                     ),
                   ),
